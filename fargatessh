@@ -1,0 +1,53 @@
+#!/bin/bash
+
+usage() {
+cat << EOS
+usage:
+  fargatessh [OPTION]...
+    -p AWS_PROFILE(require)
+    -c CLUSTER_NAME
+    -s SERVICE_NAME
+    -t CONTAINER_NAME
+    -f FORCE_LOGIN
+  ex) fargetessh -p profile -c cluster -s service -t app
+EOS
+}
+
+while getopts ":p:c:s:t:hf" optKey; do
+  case "$optKey" in
+    p)
+      OPT_PROFILE="${OPTARG}"
+      ;;
+    c)
+      OPT_CLUSTER="--cluster=${OPTARG}"
+      ;;
+    s)
+      OPT_SERVICE="--service=${OPTARG}"
+      ;;
+    t)
+      OPT_CONTAINER="--container=${OPTARG}"
+      ;;
+    f)
+      OPT_FORCE="--force"
+      ;;
+    '-h'|'--help'|*)
+      usage
+      ;;
+  esac
+done
+
+export AWS_PROFILE=${OPT_PROFILE}
+
+if [ -z "${AWS_PROFILE}" ]; then
+  usage
+  exit
+fi
+
+
+aws s3 ls --profile=$AWS_PROFILE> /dev/null 2>&1
+
+if [ "${?}" = "255" ]; then
+  aws sso login --profile=$AWS_PROFILE
+fi
+
+./connect_to_fargate.py ${OPT_CLUSTER} ${OPT_SERVICE} ${OPT_CONTAINER} ${OPT_FORCE}

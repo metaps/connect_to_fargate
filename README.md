@@ -13,10 +13,19 @@
 export AWS_PROFILE=profile_name; aws sso login
 (url をブラウザで参照し、 codeを入力する)
 
+# 必要モジュールのインストール
+pip install boto3
+pip install inquirer
+
+# Session Manager プラグインインストール(下記URLはMacOSでのインストール方法)
+https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-macos
+
+# リンク作成
+sudo ln -s $(pwd)/connect_to_fargate.py /usr/local/bin
+
 # スクリプト実行する
 connect_to_fargate.py
 
-※/usr/local/binに配置
 ※connect_to_fargate.py_(日時).logにログが出力されます。
 
 ※引数に以下を利用できるように追加しました。

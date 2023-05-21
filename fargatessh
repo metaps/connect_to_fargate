@@ -50,4 +50,4 @@ if [ "${?}" = "255" ]; then
   aws sso login --profile=$AWS_PROFILE
 fi
 
-./connect_to_fargate.py ${OPT_CLUSTER} ${OPT_SERVICE} ${OPT_CONTAINER} ${OPT_FORCE}
+connect_to_fargate.py ${OPT_CLUSTER} ${OPT_SERVICE} ${OPT_CONTAINER} ${OPT_FORCE}

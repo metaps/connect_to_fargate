@@ -23,6 +23,9 @@ https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/session-manag
 # リンク作成
 sudo ln -s $(pwd)/connect_to_fargate.py /usr/local/bin
 
+# ログディレクトリ作成(任意)
+mkdir -p ~/.connect_to_fargate/log
+
 # スクリプト実行する
 connect_to_fargate.py
 

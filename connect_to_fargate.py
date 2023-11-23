@@ -55,8 +55,11 @@ class ExtendedList(List):
 # ログ出力設定関数
 def setLogger():
   script_name = __file__.split('/')[-1]
+  log_dir_name = os.environ['HOME'] + '/.' + script_name.split('.')[0] + '/log'
+  log_dir_base = log_dir_name + '/' if (os.path.exists(log_dir_name)) else './'
+
   dt = datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')
-  logfile_name = './{}_{}.log'.format(script_name, dt)
+  logfile_name = log_dir_base + '{}_{}.log'.format(script_name, dt)
 
   logger = logging.getLogger(script_name)
   logger.setLevel(logging.INFO)

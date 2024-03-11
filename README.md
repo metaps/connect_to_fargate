@@ -20,6 +20,9 @@ pip install inquirer
 # Session Manager プラグインインストール(下記URLはMacOSでのインストール方法)
 https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-macos
 
+# aws cli のインストール
+https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html
+
 # リンク作成
 sudo ln -s $(pwd)/connect_to_fargate.py /usr/local/bin
 

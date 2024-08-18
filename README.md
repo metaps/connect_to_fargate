@@ -55,7 +55,7 @@ $ connect_to_fargate.py
 
 クラスター名: default
 
-[?] 接続先が存在するサービス名を選択してください: ticketpay-wordpress-development
+[?] 接続先が存在するサービス名を選択してください: wordpress-development
  ❯ service_a
    service_b
 
@@ -97,7 +97,7 @@ exit
 
 Exiting session with sessionId: ecs-execute-command-08107c57e1eb5fee9.
 
-CompletedProcess(args='/usr/local/bin/aws ecs execute-command --cluster fumizawa-test-cluster --task 87b5a48c8b99450d9dea5443c863ee5d --container nginx --interactive --command /bin/bash | tee ./connect_to_fargate.py_20220629090944872720.log', returncode=0)
+CompletedProcess(args='/usr/local/bin/aws ecs execute-command --cluster test-cluster --task 87b5a48c8b99450d9dea5443c863ee5d --container nginx --interactive --command /bin/bash | tee ./connect_to_fargate.py_20220629090944872720.log', returncode=0)
 Fargateからログアウトしました
 ```
 
@@ -105,7 +105,7 @@ Fargateからログアウトしました
 ```
 $ connect_to_fargate.py --cluster=default --container=web
 処理を開始します
-[?] 接続先が存在するサービス名を選択してください: ticketpay-wordpress-development
+[?] 接続先が存在するサービス名を選択してください: wordpress-development
  ❯ service_a
    service_b
 
@@ -137,7 +137,7 @@ Fargateにログインします
 $ fargatessh -p profile -c default -t app -f
 
 処理を開始します
-[?] 接続先が存在するサービス名を選択してください: ticketpay-wordpress-development
+[?] 接続先が存在するサービス名を選択してください: wordpress-development
  ❯ service_a
    service_b
 
@@ -201,7 +201,7 @@ Cluster: (クラスター名)
 Task   : (タスク名)
 -------------------------------------------------------------
   Cluster Configuration  | Audit Logging Not Configured
-  Can I ExecuteCommand?  | arn:aws:iam::172972874842:role/aws-reserved/sso.amazonaws.com/ap-northeast-1/AWSReservedSSO_Administrators@FrontSystem_10607a14223798a0
+  Can I ExecuteCommand?  | arn:aws:iam::172972874842:role/aws-reserved/sso.amazonaws.com/ap-northeast-1/AWSReservedSSO_Administrators@System_10607a14223798a0
      ecs:ExecuteCommand: allowed
      ssm:StartSession denied?: allowed
   Task Status            | RUNNING
@@ -228,14 +228,14 @@ Task   : (タスク名)
      ssmmessages:OpenControlChannel: allowed
      ssmmessages:OpenDataChannel: allowed
   VPC Endpoints          |
-    Found existing endpoints for vpc-01cd9e8961a6cca07:
+    Found existing endpoints for vpc-00000000000000:
       - com.amazonaws.ap-northeast-1.s3
       - com.amazonaws.ap-northeast-1.kms
       - com.amazonaws.ap-northeast-1.ec2messages
       - com.amazonaws.ap-northeast-1.ssm
       - com.amazonaws.ap-northeast-1.ssmmessages
       - com.amazonaws.ap-northeast-1.secretsmanager
-  Environment Variables  | (kaihipay-wordpress-development:37)
+  Environment Variables  | (wordpress-development:37)
        1. container "web"
        - AWS_ACCESS_KEY: not defined
        - AWS_ACCESS_KEY_ID: not defined

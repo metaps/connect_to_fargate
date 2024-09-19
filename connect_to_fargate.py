@@ -132,6 +132,7 @@ def checkService(cluster_name, service_name):
   service_list = []
   for serviceArn in ecs.list_services(
     cluster = cluster_name,
+    maxResults = 100,
     launchType = 'FARGATE'
   )['serviceArns']:
     service = serviceArn.split('/')[len(serviceArn.split('/')) - 1]

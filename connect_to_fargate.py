@@ -151,6 +151,7 @@ def setService(logger, cluster_name):
   service_list = []
   for serviceArn in ecs.list_services(
     cluster = cluster_name,
+    maxResults = 100,
     launchType = 'FARGATE'
   )['serviceArns']:
     service = serviceArn.split('/')[len(serviceArn.split('/')) - 1]
@@ -173,6 +174,7 @@ def checkTask(cluster_name, service_name, task_name):
     cluster = cluster_name,
     serviceName = service_name,
     desiredStatus = 'RUNNING',
+    maxResults = 100,
     launchType = 'FARGATE'
   )['taskArns']:
     task = taskArn.split('/')[len(taskArn.split('/')) - 1]
@@ -193,6 +195,7 @@ def setTask(logger, cluster_name, service_name):
     cluster = cluster_name,
     serviceName = service_name,
     desiredStatus = 'RUNNING',
+    maxResults = 100,
     launchType = 'FARGATE'
   )['taskArns']:
     task = taskArn.split('/')[len(taskArn.split('/')) - 1]

@@ -8,45 +8,108 @@
 
 
 ## 利用方法
+
+### アクセスキー確認
+
+![アクセスキー確認](./img/aws_access_potal_access_key.png "アクセスキー確認")
+
+### aws profile　設定
+
 ```
-# Profileを設定して、sso login する
-export AWS_PROFILE=profile_name; aws sso login
+$ aws configure --profile "profile_name"
+```
+
+### 設定確認
+
+```
+$ aws configure list
+```
+
+```
+      Name                    Value             Type    Location
+      ----                    -----             ----    --------
+   profile             profile_name              env    ['AWS_PROFILE', 'AWS_DEFAULT_PROFILE']
+access_key     ****************ABCD   shared-credentials-file    
+secret_key     ****************EFGH   shared-credentials-file    
+    region           ap-northeast-1       config-file    ~/.aws/config
+```
+
+### aws sso　設定
+
+```
+$ aws configure sso
+```
+
+### Profileを設定して、sso login する
+
+```
+$ export AWS_PROFILE=profile_name; aws sso login
+```
+
 (url をブラウザで参照し、 codeを入力する)
 
-# 必要モジュールのインストール
-pip install boto3
-pip install inquirer
+### pipコマンド
 
-# Session Manager プラグインインストール(下記URLはMacOSでのインストール方法)
+pythonのインストールが必要
+
+MacOSの場合は`pip`を`pip3`で使用している場合があります。
+
+### モジュールのインストール
+
+```
+$ pip install -r requirements.txt
+```
+
+### Session Manager プラグインインストール(下記URLはMacOSでのインストール方法)
+
 https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-macos
 
-# aws cli のインストール
+### aws cli のインストール
+
 https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html
 
-# リンク作成
-sudo ln -s $(pwd)/connect_to_fargate.py /usr/local/bin
+### リンク作成
 
-# ログディレクトリ作成(任意)
-mkdir -p ~/.connect_to_fargate/log
+```
+$ sudo ln -s $(pwd)/connect_to_fargate.py /usr/local/bin
+```
 
-# スクリプト実行する
-connect_to_fargate.py
+### ログディレクトリ作成(任意)
+
+```
+$ mkdir -p ~/.connect_to_fargate/log
+```
+
+### スクリプト実行する
+
+```
+$ connect_to_fargate.py
+```
 
 ※connect_to_fargate.py_(日時).logにログが出力されます。
 
 ※引数に以下を利用できるように追加しました。
+
 --cluster=クラスター名（指定ない場合は、対話型の選択画面に遷移）
+
 --service=サービス名（指定ない場合は、対話型の選択画面に遷移）
+
 --task=タスク名（指定ない場合は、対話型の選択画面に遷移）
+
 --container=コンテナ名（指定ない場合は、対話型の選択画面に遷移）
+
 --cmd=コンテナで実行するコマンド（指定ない場合は、/bin/bash）
 
 ※Ctrl + Cの挙動は変更しました（接続処理直前にSIGINTをSIG_IGNに変換する処理を追加）
-```
+
 
 ### 実行結果（例１ 引数なし）
+
 ```
 $ connect_to_fargate.py
+```
+
+```
 処理を開始します
 [?] 接続先が存在するクラスター名を選択してください: default
  ❯ default
@@ -102,8 +165,12 @@ Fargateからログアウトしました
 ```
 
 ### 実行結果（例２ 一部引数あり）
+
 ```
 $ connect_to_fargate.py --cluster=default --container=web
+```
+
+```
 処理を開始します
 [?] 接続先が存在するサービス名を選択してください: wordpress-development
  ❯ service_a
@@ -133,9 +200,12 @@ Fargateにログインします
 ```
 
 ### 実行結果（例３ fargatessh利用）
+
 ```
 $ fargatessh -p profile -c default -t app -f
+```
 
+```
 処理を開始します
 [?] 接続先が存在するサービス名を選択してください: wordpress-development
  ❯ service_a

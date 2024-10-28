@@ -386,6 +386,7 @@ def main():
     ecsExecute(logger, cluster_name, service_name, task_name, container_name, shell_cmd, logfile, force_connect)
   except Exception as e:
     logger.error("処理を終了します\nエラー詳細: {}\n{}".format(e, traceback.format_exc()))
+    exit(255)
   return
 
 # 実行処理

@@ -36,18 +36,17 @@ while getopts ":p:c:s:t:hf" optKey; do
   esac
 done
 
+aws s3 ls --profile=$OPT_PROFILE > /dev/null 2>&1
+
+if [ "${?}" != "0" ]; then
+  aws sso login --profile=$OPT_PROFILE
+fi
+
 export AWS_PROFILE=${OPT_PROFILE}
 
 if [ -z "${AWS_PROFILE}" ]; then
   usage
   exit
-fi
-
-
-aws s3 ls --profile=$AWS_PROFILE> /dev/null 2>&1
-
-if [ "${?}" = "255" ]; then
-  aws sso login --profile=$AWS_PROFILE
 fi
 
 connect_to_fargate.py ${OPT_CLUSTER} ${OPT_SERVICE} ${OPT_CONTAINER} ${OPT_FORCE}

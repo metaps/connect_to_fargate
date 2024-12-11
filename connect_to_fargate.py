@@ -129,6 +129,10 @@ def checkService(cluster_name, service_name):
   session = boto3.session.Session(profile_name = os.environ['AWS_PROFILE'])
   ecs = session.client('ecs')
 
+  ## スタンドアロンタスクを指定したい場合はチェックを行わない
+  if service_name is None:
+    return True
+
   service_list = []
   for serviceArn in ecs.list_services(
     cluster = cluster_name,
@@ -156,9 +160,13 @@ def setService(logger, cluster_name):
   )['serviceArns']:
     service = serviceArn.split('/')[len(serviceArn.split('/')) - 1]
     service_list.append(service)
+  service_list.append('[standalone-tasks]')
 
   service_name = selected_answer(service_list, "接続先が存在するサービス名を選択してください")
-  if checkService(cluster_name, service_name):
+  if service_name == '[standalone-tasks]':
+    logger.info('サービス名: {}\n'.format(service_name))
+    return None
+  elif checkService(cluster_name, service_name):
     logger.info('サービス名: {}\n'.format(service_name))
     return service_name
   else :
@@ -170,15 +178,25 @@ def checkTask(cluster_name, service_name, task_name):
   ecs = session.client('ecs')
 
   task_list = []
-  for taskArn in ecs.list_tasks(
-    cluster = cluster_name,
-    serviceName = service_name,
-    desiredStatus = 'RUNNING',
-    maxResults = 100,
-    launchType = 'FARGATE'
-  )['taskArns']:
-    task = taskArn.split('/')[len(taskArn.split('/')) - 1]
-    task_list.append(task)
+  if service_name is None:
+    for task_arn in ecs.list_tasks(
+      cluster = cluster_name,
+      desiredStatus = 'RUNNING',
+      maxResults = 100,
+      launchType = 'FARGATE'
+    )['taskArns']:
+      task = task_arn.split('/')[len(task_arn.split('/')) - 1]
+      task_list.append(task)
+  else:
+    for task_arn in ecs.list_tasks(
+      cluster = cluster_name,
+      serviceName = service_name,
+      desiredStatus = 'RUNNING',
+      maxResults = 100,
+      launchType = 'FARGATE'
+    )['taskArns']:
+      task = task_arn.split('/')[len(task_arn.split('/')) - 1]
+      task_list.append(task)
 
   if task_name in task_list:
     return True
@@ -191,16 +209,34 @@ def setTask(logger, cluster_name, service_name):
   ecs = session.client('ecs')
 
   task_list = []
-  for taskArn in ecs.list_tasks(
-    cluster = cluster_name,
-    serviceName = service_name,
-    desiredStatus = 'RUNNING',
-    maxResults = 100,
-    launchType = 'FARGATE'
-  )['taskArns']:
-    task = taskArn.split('/')[len(taskArn.split('/')) - 1]
-    task_list.append(task)
-  task_name = selected_answer(task_list, "接続先が存在するタスク名を選択してください")
+  if service_name is None:
+    task_arn = ecs.list_tasks(
+      cluster = cluster_name,
+      desiredStatus = 'RUNNING',
+      maxResults = 100,
+      launchType = 'FARGATE'
+    )['taskArns']
+    task_details = ecs.describe_tasks(cluster=cluster_name, tasks=task_arn)
+    # スタンドアロンタスクをフィルタリング
+    for task in task_details['tasks']:
+      if not task['group'].startswith('service:'):
+        task_name = task['taskArn'].split('/')[len(task['taskArn'].split('/')) - 1]
+        task_list.append(task_name)
+  else:
+    for task_arn in ecs.list_tasks(
+      cluster = cluster_name,
+      serviceName = service_name,
+      desiredStatus = 'RUNNING',
+      maxResults = 100,
+      launchType = 'FARGATE'
+    )['taskArns']:
+      task_name = task_arn.split('/')[len(task_arn.split('/')) - 1]
+      task_list.append(task_name)
+  if len(task_list) == 0:
+    logger.error('タスクが存在しません')
+    raise Exception('最初からやりなおしてください。')
+  else:
+    task_name = selected_answer(task_list, "接続先が存在するタスク名を選択してください")
 
   if checkTask(cluster_name, service_name, task_name):
     logger.info('タスク名: {}\n'.format(task_name))

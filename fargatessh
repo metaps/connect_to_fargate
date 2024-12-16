@@ -9,7 +9,7 @@ usage:
     -s SERVICE_NAME
     -t CONTAINER_NAME
     -f FORCE_LOGIN
-  ex) fargetessh -p profile -c cluster -s service -t app
+  ex) fargatessh -p profile -c cluster -s service -t app
 EOS
 }
 
@@ -36,6 +36,11 @@ while getopts ":p:c:s:t:hf" optKey; do
   esac
 done
 
+if [ -z "${OPT_PROFILE}" ]; then
+  usage
+  exit
+fi
+
 aws s3 ls --profile=$OPT_PROFILE > /dev/null 2>&1
 
 if [ "${?}" != "0" ]; then
@@ -43,10 +48,5 @@ if [ "${?}" != "0" ]; then
 fi
 
 export AWS_PROFILE=${OPT_PROFILE}
-
-if [ -z "${AWS_PROFILE}" ]; then
-  usage
-  exit
-fi
 
 connect_to_fargate.py ${OPT_CLUSTER} ${OPT_SERVICE} ${OPT_CONTAINER} ${OPT_FORCE}

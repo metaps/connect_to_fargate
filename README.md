@@ -13,13 +13,71 @@
 
 ![アクセスキー確認](./img/aws_access_potal_access_key.png "アクセスキー確認")
 
-### aws profile　設定
+### 手動でAWSアクセス資格取得確認
 
 ```
 $ aws configure --profile "profile_name"
 ```
 
-### 設定確認
+`profile_name`は自分のプロフィールをご利用ください。次の説明から`profile_name`は自分のプロファイル名を使用するものとします。
+
+
+### ブラウザでAWS SSO画面でログインしてAWSアクセス資格取得
+
+```
+$ aws configure sso --profile profile_name
+```
+
+`profile_name`は自分のプロフィールをご利用ください。
+
+ブラウザでAWS SSOのアクセスキー情報でAWS SSOの接続先の情報をローカルに設定します。
+
+`aws sso login`コマンドでブラウザでログインしてAWSアクセス資格を取得します。この方法を利用すると「手動でAWSアクセス資格取得確認」の方法を利用する必要はありません。
+
+#### 設定情報保存先
+
+`profile_name`は自分のプロフィール名なのか確認ください。
+
+`~/.aws/config`ファイルに認証情報が設定されます。
+`~/.aws/config`で設定情報を確認できます。
+
+```
+vi ~/.aws/config
+```
+
+### Profileを設定して、sso login する
+
+`aws sso login`コマンドを利用してAWSで情報を取得するために、ローカルに設定した認証情報でAWSアクセス資格を取得します。
+
+#### プロフィールを指定してログイン
+
+```
+$ export AWS_PROFILE=profile_name; aws sso login
+```
+
+`profile_name`は自分のプロフィールをご利用ください。
+
+(url をブラウザで参照し、 codeを入力する)
+
+#### シェルが起動するたびにその変数が自動的にプロフィール指定
+
+bash 環境
+
+```
+$ echo 'export AWS_PROFILE=profile_name' >> ~/.bashrc
+$ source ~/.bashrc
+```
+
+zsh 環境
+
+```
+echo 'export AWS_PROFILE=profile_name' >> ~/.zshrc
+source ~/.zshrc
+```
+
+セール設定ファイルで上の設定が行なってからは`export AWS_PROFILE=profile_name;`を書かなく、`aws sso login`コマンドだけでAWSアクセス資格を取得します。
+
+### AWSアクセス資格取得確認
 
 ```
 $ aws configure list
@@ -33,20 +91,6 @@ access_key     ****************ABCD   shared-credentials-file
 secret_key     ****************EFGH   shared-credentials-file    
     region           ap-northeast-1       config-file    ~/.aws/config
 ```
-
-### aws sso　設定
-
-```
-$ aws configure sso
-```
-
-### Profileを設定して、sso login する
-
-```
-$ export AWS_PROFILE=profile_name; aws sso login
-```
-
-(url をブラウザで参照し、 codeを入力する)
 
 ### pipコマンド
 
@@ -74,17 +118,23 @@ https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.h
 $ sudo ln -s $(pwd)/connect_to_fargate.py /usr/local/bin
 ```
 
+初期設定で一回実行する必要があります。一回設定されてからは再度設定する必要はありません。
+
 ### ログディレクトリ作成(任意)
 
 ```
 $ mkdir -p ~/.connect_to_fargate/log
 ```
 
+初期設定で一回実行する必要があります。一回設定されてからは再度設定する必要はありません。
+
 ### スクリプト実行する
 
 ```
 $ connect_to_fargate.py
 ```
+
+このコマンドを実行する前にAWSからアクセス資格を取得する必要があります。`aws sso login`の説明をご参考ください。
 
 ※connect_to_fargate.py_(日時).logにログが出力されます。
 
